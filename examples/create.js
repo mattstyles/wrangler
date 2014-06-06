@@ -60,30 +60,61 @@ schema.add({
     bar: 'bar'
 });
 
-console.log( schema );
+console.log( 'schema:', schema );
 
 
-var wrangler = Wrangler({
+var wrangler;
+Wrangler({
     db: db,
-    sep: 'X',
-    schema: schema
+    sep: '\x00',
+    models: [
+        new Model({
+            id: 'Users',
+            schema: schema
+        }),
+        new Model({
+            id: 'Sites',
+            schema: {
+                sitename: {
+                    index: true
+                }
+            }
+        })
+    ]
+}).then( function( wrangler ) {
+    console.log( 'wrangler is ready to rock' );
+    // console.log( wrangler );
+}).catch( function( err ) {
+    console.error( err );
 });
 
-wrangler.addModel({
-    id: 'Users'
-});
+// wrangler.addModel( new Model({
+//     id: 'Users',
+//     schema: schema
+// }));
+// wrangler.addModel( new Model({
+//     id: 'Sites',
+//     schema: {
+//         sitename: {
+//             index: true
+//         }
+//     }
+// }));
 
-wrangler.db.put( 'mynewkey', {foo:'foo'}, function( err ) {
-    if ( err ) {
-        console.log( 'db', err );
-    }
-
-    wrangler.models[ 0 ].level.put( 'userkey', { bar: 'bar' }, function( err ) {
-        if ( err ) {
-            console.log( 'user:', err );
-        }
-
-        console.log( '\n all done \n' );
-        // console.log( wrangler );
-    });
-});
+// console.log( 'model:', wrangler.models[ 0 ] );
+//
+//
+// wrangler.db.put( 'mynewkey', { foo: 'foo' }, function( err ) {
+//     if ( err ) {
+//         console.log( 'db', err );
+//     }
+//
+//     wrangler.models[ 0 ]._db.put( 'userkey', [ 'bar', 'quux' ], function( err ) {
+//         if ( err ) {
+//             console.log( 'user:', err );
+//         }
+//
+//         console.log( '\n all done \n' );
+//         // console.log( 'wrangler:', wrangler );
+//     });
+// });
