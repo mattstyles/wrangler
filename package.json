@@ -1,5 +1,5 @@
 {
-  "name": "Wrangler",
+  "name": "wrangler",
   "version": "0.1.0",
   "description": "Defines and stores json models by indices within a leveldb",
   "main": "index.js",
