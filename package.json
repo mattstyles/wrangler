@@ -1,6 +1,6 @@
 {
   "name": "level-wrangler",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Defines and stores json models by indices within a leveldb",
   "main": "index.js",
   "scripts": {
