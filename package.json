@@ -1,6 +1,6 @@
 {
   "name": "level-wrangler",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Defines and stores json models by indices within a leveldb",
   "main": "index.js",
   "scripts": {
@@ -16,8 +16,8 @@
   ],
   "author": "Matt Styles @personalurban",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/mattstyles/wrangler"
+    "type": "git",
+    "url": "https://github.com/mattstyles/wrangler"
   },
   "license": "ISC",
   "dependencies": {
