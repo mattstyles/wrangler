@@ -15,6 +15,10 @@
     "model"
   ],
   "author": "Matt Styles @personalurban",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/mattstyles/wrangler"
+  },
   "license": "ISC",
   "dependencies": {
     "es6-promise": "^1.0.0",
