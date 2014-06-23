@@ -1,3 +1,9 @@
+# 0.2.0 - 23.06.14
+
+* Generate unique ids
+* Update package repo
+* Model refactor
+
 # 0.1.1 - 22.06.14
 
 * Pass separators to models
