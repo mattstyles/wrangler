@@ -1,4 +1,8 @@
-# 0.3.0 - 25.05.14
+# 0.3.1 - 25.06.14
+
+* Fix creating wrangler with models
+
+# 0.3.0 - 25.06.14
 
 * Implement find
 * Enforce unique indices
