@@ -61,17 +61,19 @@ suite( 'adding models to wrangler - ', function() {
 
         Wrangler({
             db: dbName,
-            models: [{
-                id: 'test',
-                model: {}
-            }, {
-                id: 'test2',
-                model: {}
-            }]
+            models: [
+                new Wrangler.Model({
+                    id: 'Users',
+                    schema: new Wrangler.Schema( {} )
+                }), new Wrangler.Model({
+                    id: 'Sites',
+                    schema: new Wrangler.Schema( {} )
+                })
+            ]
         })
             .then( function( wrangler ) {
                 wrangler.models.should.not.be.empty;
-                wrangler.models[ 0 ].model.should.not.be.false;
+                wrangler.models[ 0 ].should.not.be.false;
                 wrangler.db.close( done );
             });
     });
