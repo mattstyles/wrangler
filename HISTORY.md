@@ -1,3 +1,10 @@
+# 0.3.0 - 25.05.14
+
+* Implement find
+* Enforce unique indices
+* Use old ids or generate new ones
+* Save models against an id
+
 # 0.2.0 - 23.06.14
 
 * Generate unique ids
