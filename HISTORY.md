@@ -1,6 +1,9 @@
-# 0.4.0
+# 0.4.0 - 26.06.14
 
 * Implement findAll to return an array of models
+* Allow searching for an item across indices
+* Allow search by id
+* fix: assign a new id for models
 
 # 0.3.1 - 25.06.14
 
