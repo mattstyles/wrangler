@@ -1,3 +1,7 @@
+# 0.4.0
+
+* Implement findAll to return an array of models
+
 # 0.3.1 - 25.06.14
 
 * Fix creating wrangler with models
