@@ -1,3 +1,7 @@
+# 0.5.0 - 03.02.15
+
+* Update deps to be iojs-friendly
+
 # 0.4.0 - 26.06.14
 
 * Implement findAll to return an array of models
