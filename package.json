@@ -4,7 +4,7 @@
   "description": "Defines and stores json models by indices within a leveldb",
   "main": "dist/index.js",
   "scripts": {
-    "test": "tape ./spec/*.js",
+    "test": "npm run build && tape ./spec/*.js",
     "build": "rm -rf dist && babel lib --out-dir dist",
     "watch": "babel --watch lib --out-dir dist",
     "prepublish": "npm run build"
@@ -26,7 +26,6 @@
   },
   "license": "ISC",
   "dependencies": {
-    "eventemitter3": "^0.1.1"
   },
   "devDependencies": {
     "babel": "^4.7.10",
