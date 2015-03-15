@@ -8,18 +8,32 @@ var dbpath = path.join( os.tmpdir(), 'level-wrangler-' + Math.random() );
 var level = require( 'level' )( dbpath );
 var wrangler = require( '../dist' )( level );
 
-var Model = require( '../dist/model/model' );
+var FactoryClass = require( '../dist/model/factory' );
+var ModelClass = require( '../dist/model/model' );
 
 
-test( 'optional new Model', function( t ) {
+test( 'optional new Factory', function( t ) {
     t.plan( 2 );
 
-    var model = new wrangler.Model( 'test', {} );
+    var Factory = new wrangler.Factory( 'test', {} );
 
-    t.ok( model instanceof Model, 'called using new' );
+    t.ok( Factory instanceof FactoryClass, 'called using new' );
 
-    model = null;
-    model = wrangler.Model( 'test', {} );
+    Factory = null;
+    Factory = wrangler.Factory( 'test', {} );
 
-    t.ok( model instanceof Model, 'called without new' );
+    t.ok( Factory instanceof FactoryClass, 'called without new' );
+});
+
+
+test( 'Factories should be able to create Model instances', function( t ) {
+    t.plan( 4 );
+
+    var Factory = wrangler.Factory( 'user', {} );
+    var model = Factory.create({
+        name: 'Dave'
+    });
+
+    t.ok( model instanceof ModelClass, 'Factory creates Models' );
+    t.ok( model.name, 'Dave', 'model is assigned properties' );
 });
