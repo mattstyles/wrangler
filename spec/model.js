@@ -12,39 +12,40 @@ var FactoryClass = require( '../dist/model/factory' );
 var ModelClass = require( '../dist/model/model' );
 
 
-test( 'optional new Factory', function( t ) {
-    t.plan( 2 );
+test( 'create new Factory', function( t ) {
+    t.plan( 1 );
 
-    var Factory = new wrangler.Factory( 'test', {} );
+    var factory = wrangler.createFactory( 'test', {} );
 
-    t.ok( Factory instanceof FactoryClass, 'called using new' );
-
-    Factory = null;
-    Factory = wrangler.Factory( 'test', {} );
-
-    t.ok( Factory instanceof FactoryClass, 'called without new' );
+    t.ok( factory instanceof FactoryClass, 'called without new' );
 });
 
 
 test( 'Factories should be able to create Model instances', function( t ) {
-    t.plan( 3 );
+    t.plan( 4 );
 
-    var factory = new wrangler.Factory( 'user', {} );
-    var model = factory.create({
-        name: 'Dave'
+    var users = wrangler.createFactory( 'user', {} );
+    var model = users.create({
+        name: 'Chas'
     });
 
     t.ok( model instanceof ModelClass, 'Factory creates Models' );
-    t.ok( model.name === 'Dave', 'model is assigned properties' );
-    t.ok( factory.models.length === 1, 'model has been added to factory cache' );
+    t.ok( model.name === 'Chas', 'model is assigned properties' );
+    t.ok( users.cache.length === 1, 'model has been added to factory cache' );
+
+    var model2 = users.create({
+        name: 'Dave'
+    });
+
+    t.ok( users.cache.length === 2, 'a second model has been added to factory cache' );
 });
 
 
 test( 'Models should be assigned a unique id upon creation', function( t ) {
     t.plan( 1 );
 
-    var factory = new wrangler.Factory( 'user', {} );
-    var model = factory.create({
+    var users = wrangler.createFactory( 'user', {} );
+    var model = users.create({
         name: 'Dave'
     });
 

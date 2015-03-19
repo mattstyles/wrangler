@@ -26,6 +26,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "eventemitter3": "^0.1.6",
     "uuid": "^2.0.1"
   },
   "devDependencies": {
