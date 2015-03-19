@@ -26,6 +26,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "uuid": "^2.0.1"
   },
   "devDependencies": {
     "babel": "^4.7.10",

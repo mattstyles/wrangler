@@ -27,13 +27,26 @@ test( 'optional new Factory', function( t ) {
 
 
 test( 'Factories should be able to create Model instances', function( t ) {
-    t.plan( 4 );
+    t.plan( 3 );
 
-    var Factory = wrangler.Factory( 'user', {} );
-    var model = Factory.create({
+    var factory = new wrangler.Factory( 'user', {} );
+    var model = factory.create({
         name: 'Dave'
     });
 
     t.ok( model instanceof ModelClass, 'Factory creates Models' );
-    t.ok( model.name, 'Dave', 'model is assigned properties' );
+    t.ok( model.name === 'Dave', 'model is assigned properties' );
+    t.ok( factory.models.length === 1, 'model has been added to factory cache' );
+});
+
+
+test( 'Models should be assigned a unique id upon creation', function( t ) {
+    t.plan( 1 );
+
+    var factory = new wrangler.Factory( 'user', {} );
+    var model = factory.create({
+        name: 'Dave'
+    });
+
+    t.ok( model.id.length > 8, 'Id assigned to model' );
 });
