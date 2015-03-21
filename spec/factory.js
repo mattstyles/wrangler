@@ -43,7 +43,7 @@ test( 'Factories should be able to create Model instances', function( t ) {
 });
 
 
-test( 'Factory:Serialize should prepare a model for saving as json', function( t ) {
+test( 'Factory:serialize should prepare a model for saving as json', function( t ) {
     t.plan( 6 );
 
     var users = wrangler.createFactory( 'user', {} );
@@ -72,7 +72,7 @@ test( 'Factory:Serialize should prepare a model for saving as json', function( t
 });
 
 
-test( 'Factory:Save should save a serialized model', function( t ) {
+test( 'Factory:save should save a serialized model', function( t ) {
     t.plan( 1 );
 
     var users = wrangler.createFactory( 'user', {} );
@@ -94,8 +94,8 @@ test( 'Factory:Save should save a serialized model', function( t ) {
 });
 
 
-test( 'Factory:Find should grab a saved model', function( t ) {
-    t.plan( 4 );
+test( 'Factory:find should grab a saved model', function( t ) {
+    t.plan( 5 );
 
     var users = wrangler.createFactory( 'user', {} );
     var model = users.create({
@@ -109,12 +109,27 @@ test( 'Factory:Find should grab a saved model', function( t ) {
                     t.equal( res.name, 'Chas', 'found object props match model props' );
 
                     t.doesNotThrow( function() {
-                        var model2 = users.create( res );
-                        t.equal( model2.name, 'Chas', 'Newly created model props match found instance' );
-                        t.notEqual( model.id, model2.id, 'Newly created model has unique id' );
+                        t.ok( res instanceof ModelClass, 'Found instance should be a Model' );
+                        t.equal( res.name, 'Chas', 'Newly created model props match found instance' );
+                        t.notEqual( model.id, res.id, 'Newly created model has unique id' );
                     }, 'New model can be created from found instance' );
                 })
                 .catch( t.fail );
         })
         .catch( t.fail );
+});
+
+
+test( 'Factory:findAll should grab everything in the db', function( t ) {
+    // the previous tests will have dumped some stuff in the db
+    // this means this test is linked to the last @TODO fix, test deps suck
+    t.plan( 3 );
+
+    var users = wrangler.createFactory( 'user', {} );
+    users.findAll()
+        .then( function( res ) {
+            t.equal( res.length, 2, 'findAll should return an array of resources' );
+            t.ok( res[ 0 ] instanceof ModelClass, 'findAll should return Models' );
+            t.equal( res[ 0 ].name + res[ 1 ].name, 'ChasChas', 'findAll should return the saved models' );
+        });
 });
