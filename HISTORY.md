@@ -1,3 +1,13 @@
+
+# 2.0.0 - 24.03.15
+
+* _add_ `factory::findAll`
+* _add_ `factory::find` by id
+* _add_ `model::save`
+* _add_ pass leveldb instance
+
+---
+
 # 0.5.0 - 03.02.15
 
 * Update deps to be iojs-friendly
