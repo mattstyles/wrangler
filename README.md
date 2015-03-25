@@ -1,4 +1,4 @@
-# level-wrangler
+# level-wrangler [![Build Status](https://travis-ci.org/mattstyles/wrangler.svg?branch=master)](https://travis-ci.org/mattstyles/wrangler) [![Dependency Status](https://david-dm.org/mattstyles/wrangler.svg)](https://david-dm.org/mattstyles/wrangler)
 
 > Defines and stores json models by indices within a leveldb
 
