@@ -1,3 +1,7 @@
+# 2.1.0
+
+* _add_ `model::remove`
+* _add_ additional tests
 
 # 2.0.0 - 24.03.15
 

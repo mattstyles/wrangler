@@ -8,8 +8,6 @@ npm i -S level-wrangler
 
 ## Example
 
-### Finding stuff
-
 ```js
 var level = require( 'level-party' )( '/tmp/.db' );
 var sub = require( 'level-sublevel' )( level );
@@ -18,7 +16,11 @@ var db = require( 'level-wrangler' )( sub.sublevel( 'users', {
 }));
 
 var users = db.createFactory( 'users', {} );
+```
 
+### Finding stuff
+
+```js
 users.findAll()
     .then( res => {
         streamify( res.map( user => {
@@ -31,20 +33,19 @@ users.findAll()
 ### ~~Hiding~~ Storing stuff
 
 ```js
-var level = require( 'level-party' )( '/tmp/.db' );
-var sub = require( 'level-sublevel' )( level );
-var db = require( 'level-wrangler' )( sub.sublevel( 'users', {
-    encoding: 'json'
-}));
-
-var users = db.createFactory( 'users', {} );
-
 var user = users.create({
     username: 'Jack',
     password: 'wr4angl1ng'
 });
 
 user.save();
+```
+
+### Getting rid of stuff
+```js
+user.remove()
+    .then( ... )
+    .catch( ... )
 ```
 
 Check out the test suite for more use examples.
@@ -62,7 +63,6 @@ Test it up
 npm test
 ```
 
----
 
 ## V2 Goals
 
