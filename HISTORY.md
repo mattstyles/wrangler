@@ -1,3 +1,7 @@
+# 2.1.2 - 25.03.15
+
+* _fix_ `factory::find` should deserialize
+
 # 2.1.1 - 25.03.15
 
 * _add_ `factory::deserialize` to fix `findAll` returning incorrect ids
