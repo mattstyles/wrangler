@@ -91,6 +91,36 @@ test( 'Factory:save should save a serialized model', function( t ) {
             });
         })
         .catch( t.fail );
+
+});
+
+
+test( 'Factory:remove should remove a model', function( t ) {
+    t.plan( 1 );
+
+    var users = wrangler.createFactory( 'user', {} );
+    var model = users.create({
+        name: 'Chas'
+    });
+
+    model.save()
+        .then( function() {
+            return model.remove();
+        })
+        .then( function() {
+            level.get( model.id, function( err, res ) {
+                if ( err ) {
+                    if ( err.notFound ) {
+                        return t.ok( 'Model was removed from the db' );
+                    }
+
+                    return t.fail( err );
+                }
+
+                t.fail( 'Model was not removed' );
+            });
+        })
+        .catch( t.fail );
 });
 
 
