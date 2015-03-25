@@ -73,7 +73,7 @@ test( 'Factory:serialize should prepare a model for saving as json', function( t
 
 
 test( 'Factory:save should save a serialized model', function( t ) {
-    t.plan( 1 );
+    t.plan( 2 );
 
     var users = wrangler.createFactory( 'user', {} );
     var model = users.create({
@@ -92,11 +92,14 @@ test( 'Factory:save should save a serialized model', function( t ) {
         })
         .catch( t.fail );
 
+    t.throws( function() {
+        users.save( {} );
+    }, 'Saving a model without an id should throw' );
 });
 
 
 test( 'Factory:remove should remove a model', function( t ) {
-    t.plan( 1 );
+    t.plan( 2 );
 
     var users = wrangler.createFactory( 'user', {} );
     var model = users.create({
@@ -121,6 +124,10 @@ test( 'Factory:remove should remove a model', function( t ) {
             });
         })
         .catch( t.fail );
+
+    t.throws( function() {
+        users.remove( {} );
+    }, 'Saving a model without an id should throw' );
 });
 
 
