@@ -68,7 +68,25 @@ test( 'Factory:serialize should prepare a model for saving as json', function( t
 
     t.equal( typeof users.serialize( model2 ).speak, 'undefined', 'Serialize should strip functions from models' );
     t.equal( typeof s._private, 'undefined', 'Serialize should strip private props' );
+});
 
+
+test( 'Factory:deserialize should turn a db model into a real model', function( t ) {
+    t.plan( 3 );
+
+    var users = wrangler.createFactory( 'user', {} );
+    var dbmodel = {
+        name: 'Chas',
+        id: 'uniqueid'
+    };
+    var model = users.deserialize( dbmodel );
+
+    t.equal( dbmodel.name, model.name, 'Name should match' );
+    t.equal( dbmodel.id, model.id, 'Ids should match' );
+
+    t.throws( function() {
+        users.deserialize( {} );
+    }, 'Not passing an id throws' );
 });
 
 
@@ -114,7 +132,7 @@ test( 'Factory:remove should remove a model', function( t ) {
             level.get( model.id, function( err, res ) {
                 if ( err ) {
                     if ( err.notFound ) {
-                        return t.ok( 'Model was removed from the db' );
+                        return t.ok( true, 'Model was removed from the db' );
                     }
 
                     return t.fail( err );
@@ -160,13 +178,23 @@ test( 'Factory:find should grab a saved model', function( t ) {
 test( 'Factory:findAll should grab everything in the db', function( t ) {
     // the previous tests will have dumped some stuff in the db
     // this means this test is linked to the last @TODO fix, test deps suck
-    t.plan( 3 );
+    t.plan( 4 );
 
     var users = wrangler.createFactory( 'user', {} );
-    users.findAll()
-        .then( function( res ) {
-            t.equal( res.length, 2, 'findAll should return an array of resources' );
-            t.ok( res[ 0 ] instanceof ModelClass, 'findAll should return Models' );
-            t.equal( res[ 0 ].name + res[ 1 ].name, 'ChasChas', 'findAll should return the saved models' );
-        });
+    var model = users.create({
+        name: 'Chas'
+    });
+
+    model.save()
+        .then( function() {
+            users.findAll()
+                .then( function( res ) {
+                    t.equal( res.length, 3, 'findAll should return an array of resources' );
+                    t.ok( res[ 0 ] instanceof ModelClass, 'findAll should return Models' );
+                    t.equal( res[ 0 ].name + res[ 1 ].name, 'ChasChas', 'findAll should return the saved models' );
+                    t.equal( res[ 2 ].id, model.id, 'findAll should deserialize correctly' );
+                })
+                .catch( t.fail );
+        })
+        .catch( t.fail );
 });

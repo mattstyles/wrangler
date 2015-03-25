@@ -1,3 +1,7 @@
+# 2.1.1 - 25.03.15
+
+* _add_ `factory::deserialize` to fix `findAll` returning incorrect ids
+
 # 2.1.0 - 25.03.15
 
 * _add_ `model::remove`
