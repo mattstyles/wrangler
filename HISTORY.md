@@ -4,6 +4,7 @@
 * _add_ extend test suite
 * _add_ `wrangler::getFactory`
 * _update_ factories must have ids
+* _add_ `factory::find` uses cache
 
 # 2.1.2 - 25.03.15
 
