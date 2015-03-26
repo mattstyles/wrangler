@@ -60,3 +60,31 @@ test( 'create new Factory', function( t ) {
         }
     });
 });
+
+
+/**
+ * Wrangler::getFactory
+ */
+test( 'gets a factory instance', function( t ) {
+    t.plan( 1 );
+
+    var factory, wrangler;
+    try {
+        wrangler = new Wrangler( level );
+        wrangler.createFactory( 'test', {} );
+
+        factory = wrangler.getFactory( 'test' );
+
+        t.ok( factory instanceof FactoryClass, 'grabbed factory should be a factory instance' );
+
+    } catch( err ) {
+        console.log( err.stack );
+        t.fail( err );
+    }
+
+    t.on( 'end', function() {
+        if ( wrangler && wrangler.close ) {
+            wrangler.close();
+        }
+    });
+});
