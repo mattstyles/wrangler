@@ -158,7 +158,7 @@ test( 'Factory:remove should remove a model', function( t ) {
  * Factory:find
  */
 test( 'Factory:find should grab a saved model', function( t ) {
-    t.plan( 5 );
+    t.plan( 4 );
 
     var users = wrangler.createFactory( 'user', {} );
     var model = users.create({
@@ -170,12 +170,9 @@ test( 'Factory:find should grab a saved model', function( t ) {
             users.find( model.id )
                 .then( function( res ) {
                     t.equal( res.name, 'Chas', 'found object props match model props' );
-
-                    t.doesNotThrow( function() {
-                        t.ok( res instanceof ModelClass, 'Found instance should be a Model' );
-                        t.equal( res.name, 'Chas', 'Newly created props match found instance' );
-                        t.equal( model.id, res.id, 'Newly created model id matches found instance' );
-                    }, 'New model can be created from found instance' );
+                    t.ok( res instanceof ModelClass, 'Found instance should be a Model' );
+                    t.equal( res.name, 'Chas', 'Newly created props match found instance' );
+                    t.equal( model.id, res.id, 'Newly created model id matches found instance' );
                 })
                 .catch( t.fail );
         })
