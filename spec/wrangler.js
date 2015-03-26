@@ -66,7 +66,7 @@ test( 'create new Factory', function( t ) {
  * Wrangler::getFactory
  */
 test( 'gets a factory instance', function( t ) {
-    t.plan( 1 );
+    t.plan( 2 );
 
     var factory, wrangler;
     try {
@@ -76,7 +76,7 @@ test( 'gets a factory instance', function( t ) {
         factory = wrangler.getFactory( 'test' );
 
         t.ok( factory instanceof FactoryClass, 'grabbed factory should be a factory instance' );
-
+        t.equal( factory.id, 'test', 'grabbed factory id should match the factory id' );
     } catch( err ) {
         console.log( err.stack );
         t.fail( err );
