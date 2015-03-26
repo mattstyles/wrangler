@@ -37,7 +37,7 @@ test( 'connect', function( t ) {
  * Wrangler::createFactory
  */
 test( 'create new Factory', function( t ) {
-    t.plan( 1 );
+    t.plan( 3 );
 
     var factory, wrangler;
     try {
@@ -45,6 +45,11 @@ test( 'create new Factory', function( t ) {
         factory = wrangler.createFactory( 'test', {} );
 
         t.ok( factory instanceof FactoryClass, 'called without new' );
+        t.equal( factory.id, 'test', 'factory should have its own specified id' );
+
+        t.throws( function() {
+            wrangler.createFactory();
+        }, 'a new factory needs an id specified' );
     } catch( err ) {
         t.fail( err );
     }
