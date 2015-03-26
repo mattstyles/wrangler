@@ -158,7 +158,7 @@ test( 'Factory:remove should remove a model', function( t ) {
  * Factory:find
  */
 test( 'Factory:find should grab a saved model', function( t ) {
-    t.plan( 4 );
+    t.plan( 5 );
 
     var users = wrangler.createFactory( 'user', {} );
     var model = users.create({
@@ -175,6 +175,8 @@ test( 'Factory:find should grab a saved model', function( t ) {
                     t.equal( model.id, res.id, 'Newly created model id matches found instance' );
                 })
                 .catch( t.fail );
+
+            t.throws( users.find( 'unknownId' ), 'Unfound id will throw' );
         })
         .catch( t.fail );
 });

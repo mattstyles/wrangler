@@ -1,3 +1,10 @@
+# 2.2.0
+
+* _add_ core js dependency
+* _add_ extend test suite
+* _add_ `wrangler::getFactory`
+* _update_ factories must have ids
+
 # 2.1.2 - 25.03.15
 
 * _fix_ `factory::find` should deserialize
