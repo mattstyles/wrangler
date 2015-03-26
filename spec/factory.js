@@ -1,28 +1,24 @@
 var os = require( 'os' );
 var path = require( 'path' );
+var assert = require( 'assert' );
 
 var test = require( 'tape' );
 
 var dbpath = path.join( os.tmpdir(), 'level-wrangler-' + Math.random() );
 
-var level = require( 'level' )( dbpath, {
+var levelup = require( 'level' );
+var level = levelup( dbpath, {
     encoding: 'json'
 });
-var wrangler = require( '../dist' )( level );
+var Wrangler = require( '../dist' );
+var wrangler = new Wrangler( level );
 
-var FactoryClass = require( '../dist/model/factory' );
 var ModelClass = require( '../dist/model/model' );
 
 
-test( 'create new Factory', function( t ) {
-    t.plan( 1 );
-
-    var factory = wrangler.createFactory( 'test', {} );
-
-    t.ok( factory instanceof FactoryClass, 'called without new' );
-});
-
-
+/**
+ * Factory::create
+ */
 test( 'Factories should be able to create Model instances', function( t ) {
     t.plan( 4 );
 
@@ -43,6 +39,9 @@ test( 'Factories should be able to create Model instances', function( t ) {
 });
 
 
+/**
+ * Factory::serialize
+ */
 test( 'Factory:serialize should prepare a model for saving as json', function( t ) {
     t.plan( 6 );
 
@@ -71,6 +70,9 @@ test( 'Factory:serialize should prepare a model for saving as json', function( t
 });
 
 
+/**
+ * Factory::deserialize
+ */
 test( 'Factory:deserialize should turn a db model into a real model', function( t ) {
     t.plan( 3 );
 
@@ -90,6 +92,9 @@ test( 'Factory:deserialize should turn a db model into a real model', function( 
 });
 
 
+/**
+ * Factory::save
+ */
 test( 'Factory:save should save a serialized model', function( t ) {
     t.plan( 2 );
 
@@ -116,6 +121,9 @@ test( 'Factory:save should save a serialized model', function( t ) {
 });
 
 
+/**
+ * Factory::remove
+ */
 test( 'Factory:remove should remove a model', function( t ) {
     t.plan( 2 );
 
@@ -130,15 +138,12 @@ test( 'Factory:remove should remove a model', function( t ) {
         })
         .then( function() {
             level.get( model.id, function( err, res ) {
-                if ( err ) {
-                    if ( err.notFound ) {
-                        return t.ok( true, 'Model was removed from the db' );
-                    }
-
-                    return t.fail( err );
+                try {
+                    t.ok( err.notFound, 'Model was removed from the db' );
+                } catch( err ) {
+                    t.fail( err );
                 }
 
-                t.fail( 'Model was not removed' );
             });
         })
         .catch( t.fail );
@@ -149,6 +154,9 @@ test( 'Factory:remove should remove a model', function( t ) {
 });
 
 
+/**
+ * Factory:find
+ */
 test( 'Factory:find should grab a saved model', function( t ) {
     t.plan( 5 );
 
@@ -175,27 +183,63 @@ test( 'Factory:find should grab a saved model', function( t ) {
 });
 
 
+/**
+ * Factory::findAll
+ */
 test( 'Factory:findAll should grab everything in the db', function( t ) {
-    // the previous tests will have dumped some stuff in the db
-    // this means this test is linked to the last @TODO fix, test deps suck
-    t.plan( 3 );
+    t.plan( 1 );
 
-    var users = wrangler.createFactory( 'user', {} );
+    var localLevel = levelup( path.join( os.tmpdir(), 'level-wrangler-' + Math.random() ), {
+        encoding: 'json'
+    });
+    var localWrangler = new Wrangler( localLevel );
+
+    var users = localWrangler.createFactory( 'user', {} );
+
+    Promise.all([
+        users.create({name: '' + Math.random() }).save(),
+        users.create({name: '' + Math.random() }).save(),
+        users.create({name: '' + Math.random() }).save()
+    ])
+        .then( function() {
+            return users.findAll();
+        })
+        .then( function( models ) {
+            t.equal( models.length, 3, 'findAll should return an array of resources' );
+        })
+        .catch( t.fail );
+
+    t.on( 'end', function() {
+        if ( localWrangler && localWrangler.close ) {
+            localWrangler.close();
+        }
+    });
+});
+
+
+test( 'Factory::findAll should grab the models from the db correctly', function( t ) {
+    t.plan( 4 );
+
+    var localLevel = levelup( path.join( os.tmpdir(), 'level-wrangler-' + Math.random() ), {
+        encoding: 'json'
+    });
+    var localWrangler = new Wrangler( localLevel );
+
+    var users = localWrangler.createFactory( 'user', {} );
     var model = users.create({
-        name: 'Chas'
+        name: 'Dave',
+        says: 'yuuup'
     });
 
     model.save()
         .then( function() {
-            users.findAll()
-                .then( function( res ) {
-                    t.equal( res.length, 3, 'findAll should return an array of resources' );
-                    t.ok( res[ 0 ] instanceof ModelClass, 'findAll should return Models' );
-                    t.equal( res[ 0 ].name + res[ 1 ].name, 'ChasChas', 'findAll should return the saved models' );
-                    // @TODO skip for now - order of res is not assured so extract to a new db
-                    // t.equal( res[ 2 ].id, model.id, 'findAll should deserialize correctly' );
-                })
-                .catch( t.fail );
+            return users.findAll();
+        })
+        .then( function( models ) {
+            t.equal( models.length, 1, 'findAll should return the sole instance in a db' );
+            t.ok( models[ 0 ] instanceof ModelClass, 'findAll should return Model instances' );
+            t.equal( model.id, models[ 0 ].id, 'findAll should return the stored id of a model' );
+            t.deepEqual( model, models[ 0 ], 'findAll should return a model with all of its properties and model props' );
         })
         .catch( t.fail );
 });
