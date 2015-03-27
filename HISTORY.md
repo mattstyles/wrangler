@@ -1,4 +1,4 @@
-# 2.2.0
+# 2.2.0 - 27.03.15
 
 * _update_ cache only unique models
 * _add_ core js dependency
