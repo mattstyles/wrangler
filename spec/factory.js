@@ -189,6 +189,55 @@ test( 'Factory:find should grab a saved model', function( t ) {
         .catch( t.fail );
 });
 
+test( 'Factory:find options should specify no-cache retrieval', function( t ) {
+    t.plan( 2 );
+
+    var users = wrangler.createFactory( 'user', {} );
+
+    // Dont cache this model, if there are no locals it will only
+    // call _findCacheIndex once per find (a 2nd call will happen if it is
+    // found locally during the refresh from server phase)
+    var model = users.create({
+        name: 'Chas'
+    }, {
+        cache: false
+    });
+
+    // Spy on users._findCacheIndex
+    var original = users._findCacheIndex;
+    var spy = {
+        callCount: 0,
+        run: function( model ) {
+            spy.callCount++;
+            return original.call( users, model );
+        }
+    };
+    users._findCacheIndex = spy.run;
+
+    // users.find( model.id );
+    model.save()
+        .then( function() {
+            users.find( model.id )
+                .then( function() {
+                    t.equal( spy.callCount, 1, 'Default find should check the cache' );
+                })
+                // Cascade to ensure last find has finished
+                .then( function() {
+                    users.find( model.id, {
+                        cache: false
+                    })
+                        .then( function() {
+                            // Spy call count should be the same i.e. 1, meaning this find has not called it
+                            t.equal( spy.callCount, 1, 'Find with cache:false should not try to grab from cache' );
+                        })
+                        .catch( t.fail );
+                })
+                .catch( t.fail );
+        })
+        .catch( t.fail );
+
+});
+
 
 /**
  * Factory::findAll
