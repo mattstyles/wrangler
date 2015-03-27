@@ -71,9 +71,9 @@ test( 'Factory:serialize should prepare a model for saving as json', function( t
 
 
 /**
- * Factory::deserialize
+ * Factory::parse
  */
-test( 'Factory:deserialize should turn a db model into a real model', function( t ) {
+test( 'Factory:parse should turn a db model into a real model', function( t ) {
     t.plan( 3 );
 
     var users = wrangler.createFactory( 'user', {} );
@@ -81,13 +81,13 @@ test( 'Factory:deserialize should turn a db model into a real model', function( 
         name: 'Chas',
         id: 'uniqueid'
     };
-    var model = users.deserialize( dbmodel );
+    var model = users.parse( dbmodel );
 
     t.equal( dbmodel.name, model.name, 'Name should match' );
     t.equal( dbmodel.id, model.id, 'Ids should match' );
 
     t.throws( function() {
-        users.deserialize( {} );
+        users.parse( {} );
     }, 'Not passing an id throws' );
 });
 

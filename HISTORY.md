@@ -4,7 +4,8 @@
 * _add_ extend test suite
 * _add_ `wrangler::getFactory`
 * _update_ factories must have ids
-* _add_ `factory::find` uses cache
+* _add_ `factory::find` optionally uses cache
+* _update_ **Breaking** Sorry, totally un-semver but `factory::deserialize` has changed to `factory::parse`, `factory::deserialize` has been removed
 
 # 2.1.2 - 25.03.15
 
