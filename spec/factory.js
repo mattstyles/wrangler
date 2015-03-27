@@ -256,3 +256,65 @@ test( 'Factory::findAll should grab the models from the db correctly', function(
         }
     });
 });
+
+
+/**
+ * Private methods
+ */
+test( 'Factory::cache methods should manipulate the cache', function( t ) {
+    t.plan( 11 );
+
+    var localLevel = levelup( path.join( os.tmpdir(), 'level-wrangler-' + Math.random() ), {
+        encoding: 'json'
+    });
+    var localWrangler = new Wrangler( localLevel );
+
+    var users = localWrangler.createFactory( 'user', {} );
+    var model = users.create({
+        name: 'Chas'
+    });
+    var model2 = users.create({
+        name: 'Dave'
+    });
+
+    t.equal( users.cache.length, 2, 'First created model should be cached' );
+
+    t.equal( users._findCacheIndex( model ), 0, 'Should be able to find a cached models index' );
+    t.equal( users._findCacheIndex( model2 ), 1, 'Should be able to find a cached models index' );
+
+    t.equal( users.cache[ 0 ].name + 'And' + users.cache[ 1 ].name, 'ChasAndDave', 'Cache should maintain order' );
+
+    users._removeFromCache( model );
+
+    t.equal( users.cache.length, 1, 'removing a model from cache should reduce cache length' );
+    t.equal( users._findCacheIndex( model2 ), 0, 'Removing from cache will update cache index' );
+
+    t.throws( function() {
+        users._removeFromCache({
+            name: 'nope'
+        });
+    }, 'Removing a non-existent model should throw' );
+
+    t.throws( function() {
+        users._removeFromCache();
+    }, 'Failing to supply a model to remove from cache should throw' );
+
+    var model3 = users.create({
+        name: 'Ruprect'
+    }, {
+        cache: false
+    });
+
+    t.equal( users.cache.length, 1, 'Specifying uncached on model creation should not cache' );
+
+    users._pushToCache( model3 );
+
+    t.equal( users.cache.length, 2, 'pushing to cache should add the model to cache' );
+    t.equal( users.cache[ users.cache.length - 1 ].name, 'Ruprect', 'pushing to cache should add the correct model to the end of the cache array' );
+
+    t.on( 'end', function() {
+        if ( localWrangler && localWrangler.close ) {
+            localWrangler.close();
+        }
+    });
+});
