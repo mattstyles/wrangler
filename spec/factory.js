@@ -166,12 +166,20 @@ test( 'Factory:remove should remove a model', function( t ) {
  * Factory:find
  */
 test( 'Factory:find should grab a saved model', function( t ) {
-    t.plan( 5 );
+    t.plan( 7 );
 
     var users = wrangler.createFactory( 'user', {} );
     var model = users.create({
         name: 'Chas'
     });
+
+    t.doesNotThrow( function() {
+        users.find( model.id )
+            .then( function( res ) {
+                t.equal( res.name, 'Chas', 'Cache-only model props should match model props' );
+            })
+            .catch( t.fail );
+    }, 'Finding a cache-only model should be fine' );
 
     model.save()
         .then( function() {
@@ -360,6 +368,31 @@ test( 'Factory::cache methods should manipulate the cache', function( t ) {
 
     t.equal( users.cache.length, 2, 'pushing to cache should add the model to cache' );
     t.equal( users.cache[ users.cache.length - 1 ].name, 'Ruprect', 'pushing to cache should add the correct model to the end of the cache array' );
+
+    t.on( 'end', function() {
+        if ( localWrangler && localWrangler.close ) {
+            localWrangler.close();
+        }
+    });
+});
+
+
+test( 'Factory::_pushToCache should make sure cache contains only unique instances', function( t ) {
+    t.plan( 1 );
+
+    var localLevel = levelup( path.join( os.tmpdir(), 'level-wrangler-' + Math.random() ), {
+        encoding: 'json'
+    });
+    var localWrangler = new Wrangler( localLevel );
+
+    var users = localWrangler.createFactory( 'user', {} );
+    var model = users.create({
+        name: 'Chas'
+    });
+
+    users._pushToCache( model );
+
+    t.equal( users.cache.length, 1, 'Pushing the same model to cache should not add it again' );
 
     t.on( 'end', function() {
         if ( localWrangler && localWrangler.close ) {
