@@ -1,5 +1,6 @@
 # 2.2.0
 
+* _update_ cache only unique models
 * _add_ core js dependency
 * _add_ extend test suite
 * _add_ `wrangler::getFactory`
