@@ -20,7 +20,7 @@ var ModelClass = require( '../dist/model/model' );
  * Factory::create
  */
 test( 'Factories should be able to create Model instances', function( t ) {
-    t.plan( 4 );
+    t.plan( 5 );
 
     var users = wrangler.createFactory( 'user', {} );
     var model = users.create({
@@ -36,6 +36,14 @@ test( 'Factories should be able to create Model instances', function( t ) {
     });
 
     t.equal( users.cache.length, 2, 'a second model has been added to factory cache' );
+
+    users.create({
+        name: 'Kirk'
+    }, {
+        cache: false
+    });
+
+    t.equal( users.cache.length, 2, 'Setting cache:false on create options should not cache a model' );
 });
 
 
@@ -241,4 +249,10 @@ test( 'Factory::findAll should grab the models from the db correctly', function(
             t.deepEqual( model, models[ 0 ], 'findAll should return a model with all of its properties and model props' );
         })
         .catch( t.fail );
+
+    t.on( 'end', function() {
+        if ( localWrangler && localWrangler.close ) {
+            localWrangler.close();
+        }
+    });
 });
